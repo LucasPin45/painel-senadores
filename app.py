@@ -2,11 +2,27 @@ import streamlit as st
 import pandas as pd
 
 # Configuração da página
-st.set_page_config(page_title="Senadores - Contatos Institucionais", layout="wide")
-st.title("🏛️ Painel Interativo - Senadores do Brasil")
-st.markdown("Consulte informações de contato e dados institucionais dos senadores em exercício.")
+st.set_page_config(
+    page_title="Painel de Senadores | Consillium",
+    page_icon="🇧🇷",
+    layout="wide"
+)
 
-# 🛠️ Etapa de diagnóstico e carregamento seguro do CSV
+# Oculta menu lateral e rodapé
+st.markdown("""
+    <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    </style>
+""", unsafe_allow_html=True)
+
+# Logo e título
+st.image("https://www.consilliumrig.com.br/wp-content/uploads/2022/07/02_Logotipo_Consillium-1024x218.png", width=300)
+st.markdown("<h2 style='text-align: center; margin-top: 0'>Painel Interativo - Senadores do Brasil</h2>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center;'>Consulte informações de contato e dados institucionais dos senadores em exercício.</p>", unsafe_allow_html=True)
+
+# Carregamento do CSV
 try:
     df = pd.read_csv("Contato Senadores.csv", encoding="latin1", sep=";", engine="python")
     df.columns = df.columns.str.strip().str.upper()
@@ -16,7 +32,7 @@ except Exception as e:
     st.error(f"❌ Erro ao carregar o CSV: {e}")
     st.stop()
 
-# Filtros interativos
+# Filtros
 col1, col2, col3 = st.columns(3)
 with col1:
     partido = st.selectbox("Filtrar por Partido", ["Todos"] + sorted(df["PARTIDO"].dropna().unique()))
@@ -25,7 +41,7 @@ with col2:
 with col3:
     titularidade = st.selectbox("Filtrar por Titularidade", ["Todos"] + sorted(df["TITULARIDADE"].dropna().unique()))
 
-# Aplicar filtros
+# Aplicação de filtros
 filtro = df.copy()
 if partido != "Todos":
     filtro = filtro[filtro["PARTIDO"] == partido]
@@ -34,13 +50,13 @@ if uf != "Todos":
 if titularidade != "Todos":
     filtro = filtro[filtro["TITULARIDADE"] == titularidade]
 
-# Campo de busca por nome
+# Campo de busca
 busca = st.text_input("🔍 Buscar por nome do senador")
 if busca:
     filtro = filtro[filtro["NOME_PARLAMENTAR"].str.contains(busca, case=False)]
 
 # Tabela final
-st.markdown(f"### 📋 Lista de Senadores ({len(filtro)} encontrados)")
+st.markdown(f"<h4 id='lista-de-senadores' style='margin-top: 3em'>📋 Lista de Senadores ({len(filtro)} encontrados)</h4>", unsafe_allow_html=True)
 st.dataframe(
     filtro[[
         "NOME_PARLAMENTAR", "PARTIDO", "UF", "TITULARIDADE", "MANDATO",
