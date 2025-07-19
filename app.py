@@ -26,8 +26,8 @@ st.markdown("<p style='text-align: center;'>Consulte informações de contato e 
 try:
     df = pd.read_csv("Contato Senadores.csv", encoding="latin1", sep=";", engine="python")
     df.columns = df.columns.str.strip().str.upper()
-    st.success("✅ CSV carregado com sucesso!")
-    st.write("📋 Colunas detectadas no arquivo:", df.columns.tolist())
+    # st.success("CSV carregado com sucesso!")
+    # st.write("📋 Colunas detectadas no arquivo:", df.columns.tolist())
 except Exception as e:
     st.error(f"❌ Erro ao carregar o CSV: {e}")
     st.stop()
